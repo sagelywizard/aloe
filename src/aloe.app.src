@@ -1,0 +1,12 @@
+{application, aloe,
+ [
+  {description, "A persistent, AOF-backed, auto-compacting ets replacement"},
+  {vsn, git},
+  {registered, [aloe_sup]},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, {aloe_app, []}},
+  {env, []}
+ ]}.
