@@ -32,7 +32,7 @@ init([Filename, Options]) ->
         false -> 1
     end,
     {ok, Fd} = file:open(Filename, [read, append, binary]),
-    Tab = ets:new(list_to_atom(binary_to_list(Filename)), Options),
+    Tab = ets:new(list_to_atom(Filename), Options),
     file:position(Fd, 0),
     ok = read_file(Tab, Fd),
     CompactFile = Filename ++ ".aof",
