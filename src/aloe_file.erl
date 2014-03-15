@@ -29,7 +29,7 @@ start_link(Filename, Options) ->
 init([Filename, Options]) ->
     KeyPos = case lists:keyfind(keypos, 1, Options) of
         {keypos, KeyPos0} -> KeyPos0;
-        false -> none
+        false -> 1
     end,
     {ok, Fd} = file:open(Filename, [read, append, binary]),
     Tab = ets:new(list_to_atom(binary_to_list(Filename)), Options),
