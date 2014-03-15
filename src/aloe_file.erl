@@ -34,7 +34,7 @@ init([Filename, Options]) ->
     {ok, Fd} = file:open(Filename, [read, append, binary]),
     Tab = ets:new(list_to_atom(Filename), Options),
     file:position(Fd, 0),
-    ok = read_file(Tab, Fd),
+    {ok, HLL, Count} = read_file(Tab, Fd, KeyPos),
     CompactFile = Filename ++ ".aof",
     {ok, #state{
         file=Filename,
@@ -45,22 +45,28 @@ init([Filename, Options]) ->
         pending_count=0,
         fd=Fd,
         tab=Tab,
-        cardinality=hyper:new()
+        cardinality=HLL,
+        compact_delta=Count
     }}.
 
-read_file(Tab, Fd) ->
+read_file(Tab, Fd, KeyPos) ->
+    read_file(Tab, Fd, KeyPos, hyper:new(16), 0).
+
+read_file(Tab, Fd, KeyPos, HLL0, Count) ->
     case file:read(Fd, 4) of
         {ok, <<Size:32/integer>>} ->
             case file:read(Fd, Size) of
                 {ok, Bin} ->
                     Term = binary_to_term(Bin),
                     ets:insert(Tab, Term),
-                    read_file(Tab, Fd);
+                    BinToken = term_to_binary(element(KeyPos, Term)),
+                    HLL = hyper:insert(BinToken, HLL0),
+                    read_file(Tab, Fd, KeyPos, HLL, Count+1);
                 eof ->
                     throw(unexpected)
             end;
         eof ->
-            ok
+            {ok, HLL0, Count}
     end.
 
 handle_cast(_Msg, State) ->
