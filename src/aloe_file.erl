@@ -35,7 +35,7 @@ init([Filename, Options]) ->
     Tab = ets:new(list_to_atom(Filename), Options),
     file:position(Fd, 0),
     {ok, HLL, Count} = read_file(Tab, Fd, KeyPos),
-    CompactFile = Filename ++ ".aof",
+    CompactFile = "." ++ Filename ++ ".compact",
     {ok, #state{
         file=Filename,
         compact_file=CompactFile,
