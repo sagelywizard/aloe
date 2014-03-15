@@ -139,7 +139,8 @@ compact(State0) ->
         tab=Tab,
         compact_file=Filename,
         file=AOF,
-        fd=AOFFD
+        fd=AOFFD,
+        keypos=KeyPos
     } = State,
     {ok, Fd} = file:open(Filename, [append, binary]),
     {HLL, Count} = ets:foldl(fun(Obj, {HLL0, Count0}) ->
@@ -154,4 +155,9 @@ compact(State0) ->
     ok = file:rename(Filename, AOF),
     {ok, NewFd} = file:open(AOF, [read, append, binary]),
     {ok, _} = file:position(NewFd, eof),
-    State#state{fd=NewFd}.
+    State#state{
+        fd=NewFd,
+        cardinality=HLL,
+        compact_delta=Count,
+        compacting=false
+    }.
