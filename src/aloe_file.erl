@@ -126,11 +126,16 @@ commit(State) ->
 
 maybe_compact(State) ->
     #state{cardinality=Card, compact_delta=Delta} = State,
-    case Delta / hyper:card(Card) > 3 of
-        Ratio when Ratio > 3 ->
-            compact(State);
-        _ ->
-            State
+    case hyper:card(Card) of
+        0.0 ->
+            State;
+        C ->
+            case Delta / C > 3 of
+                Ratio when Ratio > 3 ->
+                    compact(State);
+                _ ->
+                    State
+            end
     end.
 
 compact(State0) ->
