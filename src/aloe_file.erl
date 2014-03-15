@@ -84,7 +84,7 @@ handle_call({insert, Obj}, From, State) ->
         pending_count=Count+1,
         pending=[{From, Obj}|Pending],
         compact_delta=Delta+1,
-        cardinality=hyper:insert(element(KeyPos, Obj), Card)
+        cardinality=hyper:insert(term_to_binary(element(KeyPos, Obj)), Card)
     },
     State1 = case State#state.pending_count of
         10 ->
