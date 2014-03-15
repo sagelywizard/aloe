@@ -17,13 +17,7 @@ init(_) ->
     {ok, ok}.
 
 handle_call({new, Filename, Options}, _From, State) ->
-    {reply, aloe_file_sup:start_file(Filename, Options), State};
-
-handle_call({insert, Tab, Object}, _From, State) ->
-    {reply, gen_server:call(Tab, {insert, Object}), State};
-
-handle_call({lookup, Tab, Object}, _From, State) ->
-    {reply, gen_server:call(Tab, {lookup, Object}), State}.
+    {reply, aloe_file_sup:start_file(Filename, Options), State}.
 
 handle_cast(_Msg, State) ->
     {noreply, State}.

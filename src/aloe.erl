@@ -6,7 +6,7 @@ new(Name, Options) ->
     gen_server:call(aloe_manager, {new, Name, Options}).
 
 insert(Tab, Object) ->
-    gen_server:call(aloe_manager, {insert, Tab, Object}).
+    gen_server:call(Tab, {insert, Object}).
 
 lookup(Tab, Object) ->
-    gen_server:call(aloe_manager, {lookup, Tab, Object}).
+    gen_server:call(Tab, {lookup, Object}).
